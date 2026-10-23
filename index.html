@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sesión 18: Flexbox Básico y Fácil — IDAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            idatYellow: '#FFC820',
+            idatDark: '#111827',
+            idatMuted: '#4B5563',
+            idatLight: '#F3F4F6'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .slide-container {
+      perspective: 1000px;
+    }
+    .slide {
+      transition: all 0.35s ease-in-out;
+      opacity: 0;
+      transform: scale(0.99) translateY(4px);
+      display: none;
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #1f2937;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #FFC820;
+    }
+
+    .box-anim {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-idatDark font-sans h-screen flex flex-col justify-between overflow-hidden select-none">
+
+  <!-- Header Corporativo Superior -->
+  <header class="bg-idatDark text-white px-6 md:px-12 py-3 flex items-center justify-between border-b-4 border-idatYellow shadow-md h-[72px] flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="bg-idatYellow text-idatDark font-black px-3 py-1 rounded text-lg tracking-wider">IDAT</div>
+      <div class="h-6 w-[1px] bg-gray-600 hidden md:block"></div>
+      <div class="hidden md:block">
+        <span class="text-xs text-idatYellow font-bold tracking-widest block uppercase">Desarrollo Web: HTML & CSS</span>
+        <span class="text-sm font-semibold">Sesión 18: Flexbox Básico (Ordenar, Alinear y Espaciar Fácilmente)</span>
+      </div>
+    </div>
+    <div class="text-right text-xs md:text-sm font-medium text-gray-300">
+      Docente: <strong class="text-idatYellow">Ing. Jhon Chavez</strong>
+    </div>
+  </header>
+
+  <!-- Área Principal de Diapositivas -->
+  <main class="flex-1 p-4 md:p-6 overflow-hidden flex items-center justify-center">
+    <div class="w-full max-w-6xl h-full flex items-stretch justify-center slide-container">
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 1: Portada (Sesión 18) -->
+      <!-- ============================================== -->
+      <div id="slide-1" class="slide active w-full bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden flex-col md:flex-row h-full">
+        <div class="md:w-5/12 bg-idatYellow p-8 md:p-12 flex flex-col justify-between relative overflow-hidden h-full flex-shrink-0">
+          <div class="absolute -right-16 -top-16 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+          <div>
+            <span class="bg-idatDark text-idatYellow font-black px-4 py-1.5 rounded-full text-xs tracking-widest uppercase">SESIÓN 18</span>
+            <h1 class="text-3xl md:text-5xl font-black text-idatDark mt-6 leading-tight">Flexbox Desde Cero</h1>
+            <p class="text-idatDark/80 font-medium mt-3 text-sm md:text-base">Aprende a poner elementos uno al lado del otro, centrarlos perfectamente y separarlos sin enredos ni matemáticas raras.</p>
+          </div>
+          <div class="border-t border-idatDark/20 pt-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-idatDark/60 block">Facilitador del curso:</span>
+            <span class="text-xl font-extrabold text-idatDark block mt-1">Ing. Jhon Chavez</span>
+            <span class="text-xs font-semibold bg-idatDark/10 text-idatDark px-2 py-0.5 rounded mt-2 inline-block">IDAT © 2026</span>
+          </div>
+        </div>
+
+        <div class="md:w-7/12 p-8 md:p-12 flex flex-col justify-center bg-radial-at-tr from-gray-50 to-white h-full overflow-y-auto">
+          <h2 class="text-2xl md:text-3xl font-bold text-idatDark mb-3">¿Por qué todo el mundo ama Flexbox?</h2>
+          <p class="text-gray-600 mb-6 leading-relaxed text-xs md:text-sm">Por defecto en HTML, las cajas se apilan una debajo de otra como ladrillos hacia el piso. <strong>Flexbox</strong> es la herramienta mágica de CSS que las pone en fila con una sola línea de código y te permite moverlas como si fueran imanes.</p>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-idatLight p-4 rounded-2xl border border-gray-200 text-center">
+              <span class="text-3xl mb-1 block">➡️</span>
+              <h3 class="font-bold text-xs md:text-sm text-idatDark">Poner en Fila</h3>
+              <p class="text-[11px] text-idatMuted mt-1"><code>display: flex</code></p>
+            </div>
+            <div class="bg-idatLight p-4 rounded-2xl border border-gray-200 text-center">
+              <span class="text-3xl mb-1 block">🎯</span>
+              <h3 class="font-bold text-xs md:text-sm text-idatDark">Centrar Todo</h3>
+              <p class="text-[11px] text-idatMuted mt-1">Horizontal y Vertical</p>
+            </div>
+            <div class="bg-idatLight p-4 rounded-2xl border border-gray-200 text-center">
+              <span class="text-3xl mb-1 block">📏</span>
+              <h3 class="font-bold text-xs md:text-sm text-idatDark">Espacio Limpio</h3>
+              <p class="text-[11px] text-idatMuted mt-1"><code>gap</code> sin márgenes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 2: Los 3 Pasos Esenciales -->
+      <!-- ============================================== -->
+      <div id="slide-2" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">RUTA FÁCIL</span>
+              <h2 class="text-2xl font-black text-idatDark uppercase tracking-tight">Lo que aprenderemos hoy (Sin complicaciones)</h2>
+            </div>
+            <p class="text-sm text-idatMuted mb-6">Solo necesitas dominar 4 conceptos básicos para maquetar cualquier página web:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="flex gap-4 p-5 rounded-2xl bg-idatLight border-l-4 border-idatYellow items-start">
+                <span class="font-black text-idatYellow text-2xl leading-none">01</span>
+                <div>
+                  <h3 class="font-bold text-sm md:text-base text-idatDark">El Padre y los Hijos (display: flex)</h3>
+                  <p class="text-xs text-idatMuted mt-1">Aprende la regla de oro: se le aplica <code>display: flex</code> al contenedor <strong>padre</strong> y automáticamente sus <strong>hijos</strong> se ordenan al lado.</p>
+                </div>
+              </div>
+
+              <div class="flex gap-4 p-5 rounded-2xl bg-idatLight border-l-4 border-amber-500 items-start">
+                <span class="font-black text-amber-500 text-2xl leading-none">02</span>
+                <div>
+                  <h3 class="font-bold text-sm md:text-base text-idatDark">Mover a lo ancho (justify-content)</h3>
+                  <p class="text-xs text-idatMuted mt-1">Cómo mandar elementos a la izquierda, al centro, a la derecha o a los extremos (ideal para menús de navegación).</p>
+                </div>
+              </div>
+
+              <div class="flex gap-4 p-5 rounded-2xl bg-idatLight border-l-4 border-emerald-500 items-start">
+                <span class="font-black text-emerald-500 text-2xl leading-none">03</span>
+                <div>
+                  <h3 class="font-bold text-sm md:text-base text-idatDark">Centrar a lo alto (align-items) y separar (gap)</h3>
+                  <p class="text-xs text-idatMuted mt-1">El fin del centrado vertical difícil. Deja de pelear con márgenes y usa <code>gap</code> para separar tus tarjetas.</p>
+                </div>
+              </div>
+
+              <div class="flex gap-4 p-5 rounded-2xl bg-idatLight border-l-4 border-idatDark items-start">
+                <span class="font-black text-idatDark text-2xl leading-none">04</span>
+                <div>
+                  <h3 class="font-bold text-sm md:text-base text-idatDark">Taller Práctico: Menú y Tarjetas</h3>
+                  <p class="text-xs text-idatMuted mt-1">Armaremos juntos un menú profesional de sitio web (logo a la izquierda, botones a la derecha) en 5 minutos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-idatMuted flex-shrink-0">
+            <span>Flexbox para Principiantes</span>
+            <span class="font-semibold text-idatDark">IDAT - Desarrollo Web 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 3: La Regla de Oro Padre vs Hijos -->
+      <!-- ============================================== -->
+      <div id="slide-3" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">PASO 1</span>
+                <h2 class="text-2xl font-black text-idatDark uppercase tracking-tight">La Regla de Oro: El Padre y los Hijos</h2>
+              </div>
+              <span class="text-xs text-idatMuted font-bold uppercase">display: flex</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch mt-2">
+              <div class="md:col-span-6 flex flex-col justify-between pr-2 text-xs md:text-sm">
+                <p class="text-gray-600 leading-relaxed mb-3">
+                  El error más común cuando empezamos es ponerle flex a la caja equivocada. Recuerda siempre esta analogía:
+                </p>
+
+                <div class="space-y-2.5 text-xs">
+                  <div class="p-3 bg-amber-50 border-l-4 border-idatYellow rounded-xl">
+                    <strong class="text-idatDark font-bold block mb-1">📦 El Padre es la Caja de Cartón:</strong>
+                    <p class="text-gray-600 text-[11px] leading-relaxed">
+                      Al contenedor exterior le dices <code>display: flex;</code>. Él es el jefe que da las órdenes de cómo acomodarse.
+                    </p>
+                  </div>
+
+                  <div class="p-3 bg-blue-50 border-l-4 border-blue-500 rounded-xl">
+                    <strong class="text-blue-950 font-bold block mb-1">🧸 Los Hijos son los Juguetes:</strong>
+                    <p class="text-gray-600 text-[11px] leading-relaxed">
+                      Son las cajas de adentro (hijos directos). Mágicamente dejan de estar apilados hacia abajo y se ponen <strong>uno al lado del otro en una fila</strong>.
+                    </p>
+                  </div>
+
+                  <div class="p-2.5 bg-emerald-50 border-l-4 border-emerald-500 rounded-xl text-[11px] text-emerald-950">
+                    💡 <strong>flex-direction:</strong> Por defecto es fila (<code>row</code>). Pero si quieres que vuelvan a ser columna hacia abajo, solo pones <code>flex-direction: column;</code>.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sintaxis clara -->
+              <div class="md:col-span-6 bg-idatDark text-gray-100 rounded-2xl p-5 font-mono text-xs overflow-auto custom-scrollbar shadow-inner relative flex flex-col justify-center min-h-[250px]">
+                <div class="absolute right-3 top-3 text-[10px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded font-sans uppercase">Código Fácil</div>
+                
+                <div class="space-y-2 text-xs mb-3">
+                  <div class="text-gray-400">&lt;!-- HTML --&gt;</div>
+                  <div>&lt;<span class="text-blue-400">div</span> <span class="text-yellow-400">class</span>="<span class="text-green-400">padre</span>"&gt;</div>
+                  <div class="pl-4">&lt;<span class="text-blue-400">div</span>&gt;Hijo 1&lt;/<span class="text-blue-400">div</span>&gt;</div>
+                  <div class="pl-4">&lt;<span class="text-blue-400">div</span>&gt;Hijo 2&lt;/<span class="text-blue-400">div</span>&gt;</div>
+                  <div class="pl-4">&lt;<span class="text-blue-400">div</span>&gt;Hijo 3&lt;/<span class="text-blue-400">div</span>&gt;</div>
+                  <div>&lt;/<span class="text-blue-400">div</span>&gt;</div>
+
+                  <div class="text-gray-400 pt-2">/* CSS: Solo se lo pides al padre */</div>
+                  <div><span class="text-yellow-400 font-bold">.padre</span> {</div>
+                  <div class="pl-6 text-green-400 font-bold">display: flex; <span class="text-gray-500">/* ¡Pum! Se ponen en fila */</span></div>
+                  <div>}</div>
+                </div>
+
+                <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700 text-[11px] font-sans text-gray-300">
+                  <strong class="text-idatYellow block mb-0.5">📌 No lo olvides:</strong>
+                  Nunca le pongas <code>display: flex</code> a los hijos. Se lo pones al contenedor padre que los envuelve.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-xs text-idatMuted border-t border-gray-100 pt-2 flex justify-between flex-shrink-0">
+            <span>Paso 1: Activar Flexbox en el Padre</span>
+            <span>Contenedor vs Elementos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 4: Justify-Content (Mover a lo ancho) -->
+      <!-- ============================================== -->
+      <div id="slide-4" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">PASO 2</span>
+                <h2 class="text-2xl font-black text-idatDark uppercase tracking-tight">justify-content: Mover a lo ancho</h2>
+              </div>
+              <span class="text-xs text-idatMuted font-bold uppercase">Horizontal</span>
+            </div>
+            
+            <p class="text-gray-600 text-xs md:text-sm mb-3">
+              Una vez que tus cajas están en fila, ¿dónde las quieres ubicar? <code>justify-content</code> tiene los 4 valores que usarás en el 99% de tus webs:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 my-2 text-left">
+              <div class="bg-idatLight p-3.5 rounded-2xl border-t-4 border-gray-400">
+                <strong class="text-xs font-bold font-mono text-idatDark block mb-1">flex-start</strong>
+                <p class="text-[11px] text-idatMuted mb-2">Todo pegado a la izquierda (inicio).</p>
+                <div class="bg-white p-2 rounded border border-gray-200 flex gap-1 h-10 items-center">
+                  <div class="w-4 h-4 bg-idatDark rounded"></div>
+                  <div class="w-4 h-4 bg-idatYellow rounded"></div>
+                </div>
+              </div>
+
+              <div class="bg-idatLight p-3.5 rounded-2xl border-t-4 border-idatYellow">
+                <strong class="text-xs font-bold font-mono text-idatDark block mb-1">center</strong>
+                <p class="text-[11px] text-idatMuted mb-2">Todo centrado en el medio de la fila.</p>
+                <div class="bg-white p-2 rounded border border-gray-200 flex justify-center gap-1 h-10 items-center">
+                  <div class="w-4 h-4 bg-idatDark rounded"></div>
+                  <div class="w-4 h-4 bg-idatYellow rounded"></div>
+                </div>
+              </div>
+
+              <div class="bg-idatLight p-3.5 rounded-2xl border-t-4 border-blue-500">
+                <strong class="text-xs font-bold font-mono text-blue-900 block mb-1">flex-end</strong>
+                <p class="text-[11px] text-idatMuted mb-2">Todo pegado a la derecha (final).</p>
+                <div class="bg-white p-2 rounded border border-gray-200 flex justify-end gap-1 h-10 items-center">
+                  <div class="w-4 h-4 bg-idatDark rounded"></div>
+                  <div class="w-4 h-4 bg-idatYellow rounded"></div>
+                </div>
+              </div>
+
+              <div class="bg-idatLight p-3.5 rounded-2xl border-t-4 border-emerald-500">
+                <strong class="text-xs font-bold font-mono text-emerald-900 block mb-1">space-between</strong>
+                <p class="text-[11px] text-idatMuted mb-2">Uno a cada extremo (¡El rey del menú!).</p>
+                <div class="bg-white p-2 rounded border border-gray-200 flex justify-between h-10 items-center">
+                  <div class="w-4 h-4 bg-idatDark rounded"></div>
+                  <div class="w-4 h-4 bg-idatYellow rounded"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-amber-50 rounded-xl border border-idatYellow/60 text-xs text-idatDark mt-3 flex items-center gap-3">
+              <span class="text-2xl">⭐</span>
+              <div>
+                <strong>El truco de oro:</strong> Con <code>space-between</code>, el logo se queda pegado a la izquierda y el botón se va solito a la derecha sin usar márgenes ni cálculos raros.
+              </div>
+            </div>
+          </div>
+          <div class="text-xs text-idatMuted border-t border-gray-100 pt-2 flex justify-between flex-shrink-0">
+            <span>Paso 2: Controlar la distribución horizontal</span>
+            <span>Alineación en el Eje Principal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 5: Align-items y Gap (Centrar vertical y separar) -->
+      <!-- ============================================== -->
+      <div id="slide-5" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">PASO 3</span>
+                <h2 class="text-2xl font-black text-idatDark uppercase tracking-tight">Centrar a lo alto (align-items) y Separar (gap)</h2>
+              </div>
+              <span class="text-xs text-idatMuted font-bold uppercase">Vertical y Espaciado</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch mt-2">
+              <!-- align-items -->
+              <div class="p-4 bg-idatLight rounded-2xl border-l-4 border-blue-500 flex flex-col justify-between">
+                <div>
+                  <h3 class="font-black text-sm text-idatDark mb-1">1. align-items: center</h3>
+                  <p class="text-xs text-gray-600 mb-2">
+                    Centra tus elementos <strong>verticalmente</strong> (a lo alto de la caja).
+                  </p>
+                  <div class="bg-white p-3 rounded-xl border border-gray-200 h-28 flex items-center justify-center gap-2">
+                    <span class="text-xs text-gray-400">Techo</span>
+                    <div class="bg-idatDark text-idatYellow px-3 py-1 rounded text-xs font-bold shadow">
+                      Centrado Perfecto
+                    </div>
+                    <span class="text-xs text-gray-400">Piso</span>
+                  </div>
+                </div>
+                <span class="text-[11px] text-blue-900 font-semibold mt-2 block">
+                  💡 Hace que tu logo y tus enlaces queden alineados a la misma altura.
+                </span>
+              </div>
+
+              <!-- gap -->
+              <div class="p-4 bg-idatLight rounded-2xl border-l-4 border-emerald-500 flex flex-col justify-between">
+                <div>
+                  <h3 class="font-black text-sm text-idatDark mb-1">2. gap (La mejor propiedad de CSS)</h3>
+                  <p class="text-xs text-gray-600 mb-2">
+                    Le da espacio <strong>solo entre los elementos</strong>, sin agregar espacios feos a los costados de la pantalla.
+                  </p>
+                  <div class="bg-white p-3 rounded-xl border border-gray-200 h-28 flex items-center justify-center gap-4">
+                    <div class="bg-idatYellow text-idatDark px-2 py-1 rounded text-xs font-bold">Caja 1</div>
+                    <span class="text-emerald-600 font-mono text-xs font-bold">&harr; 16px &harr;</span>
+                    <div class="bg-idatYellow text-idatDark px-2 py-1 rounded text-xs font-bold">Caja 2</div>
+                  </div>
+                </div>
+                <span class="text-[11px] text-emerald-950 font-semibold mt-2 block">
+                  💡 Dile adiós para siempre a pelear con <code>margin-right</code> y márgenes negativos.
+                </span>
+              </div>
+            </div>
+
+            <!-- Resumen infalible -->
+            <div class="mt-4 p-3 bg-idatDark text-white rounded-xl font-mono text-xs flex justify-between items-center">
+              <span>/* El combo para centrar cualquier cosa en el universo: */</span>
+              <span class="text-yellow-400 font-bold">display: flex; justify-content: center; align-items: center;</span>
+            </div>
+          </div>
+          <div class="text-xs text-idatMuted border-t border-gray-100 pt-2 flex justify-between flex-shrink-0">
+            <span>Paso 3: Altura y Espaciado</span>
+            <span>Centrado Vertical y Separación Limpia</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 6: Simulador en Vivo 1 (Probar Justify y Align) -->
+      <!-- ============================================== -->
+      <div id="slide-6" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col h-full justify-between">
+          <div class="flex items-center justify-between mb-3 flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">EXPERIMENTO EN VIVO</span>
+              <h2 class="text-xl font-black text-idatDark uppercase tracking-tight">Simulador: Mueve las Cajas con Clics</h2>
+            </div>
+            <button onclick="toggleExample('example-easy-sim')" class="text-xs bg-idatDark text-white px-4 py-1.5 rounded-full font-bold hover:bg-idatYellow hover:text-idatDark transition-colors">
+              💻 Ver Código / Vista Previa
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch flex-1 min-h-0 my-2">
+            <!-- Botones interactivos -->
+            <div class="text-sm flex flex-col justify-between">
+              <div>
+                <p class="text-idatMuted leading-relaxed mb-3 text-xs md:text-sm">
+                  Haz clic en los botones y mira cómo las cajas de la derecha se mueven al instante:
+                </p>
+
+                <div class="space-y-3 bg-idatLight p-4 rounded-2xl border border-gray-200 text-xs">
+                  <!-- Control Justify -->
+                  <div>
+                    <label class="block font-bold text-idatDark mb-1.5">1. ¿Dónde las quieres horizontalmente? (justify-content)</label>
+                    <div class="grid grid-cols-2 gap-1.5">
+                      <button onclick="setSimJustify('flex-start')" class="p-2 bg-white border border-gray-300 rounded-lg text-left text-[11px] font-bold hover:bg-gray-50">⬅️ flex-start (Izquierda)</button>
+                      <button onclick="setSimJustify('center')" class="p-2 bg-white border border-gray-300 rounded-lg text-left text-[11px] font-bold hover:bg-gray-50">🎯 center (Al medio)</button>
+                      <button onclick="setSimJustify('flex-end')" class="p-2 bg-white border border-gray-300 rounded-lg text-left text-[11px] font-bold hover:bg-gray-50">➡️ flex-end (Derecha)</button>
+                      <button onclick="setSimJustify('space-between')" class="p-2 bg-yellow-200 border border-idatDark rounded-lg text-left text-[11px] font-bold text-idatDark">⭐ space-between (Extremos)</button>
+                    </div>
+                  </div>
+
+                  <!-- Control Align -->
+                  <div>
+                    <label class="block font-bold text-idatDark mb-1.5">2. ¿Dónde las quieres verticalmente? (align-items)</label>
+                    <div class="flex gap-2">
+                      <button onclick="setSimAlign('flex-start')" class="px-2.5 py-1.5 bg-white border border-gray-300 rounded-lg text-[10px] font-bold">Arriba</button>
+                      <button onclick="setSimAlign('center')" class="px-2.5 py-1.5 bg-idatDark text-idatYellow rounded-lg text-[10px] font-bold">Al centro (medio)</button>
+                      <button onclick="setSimAlign('flex-end')" class="px-2.5 py-1.5 bg-white border border-gray-300 rounded-lg text-[10px] font-bold">Abajo</button>
+                    </div>
+                  </div>
+
+                  <div id="sim-status-code" class="p-2.5 bg-white rounded-xl border border-gray-200 text-[11px] text-gray-800 font-mono">
+                    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel de vista previa -->
+            <div class="border border-gray-200 rounded-2xl overflow-hidden shadow-sm flex flex-col bg-white h-full min-h-[280px]">
+              <div class="bg-gray-100 px-4 py-2 flex justify-between items-center border-b border-gray-200">
+                <span id="label-easy-sim" class="text-xs font-bold text-idatDark">Vista Previa en Vivo</span>
+                <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
+              </div>
+              
+              <div class="p-4 flex-1 overflow-auto custom-scrollbar flex items-center justify-center bg-gray-50/50">
+                <!-- VISTA PREVIA -->
+                <div id="preview-easy-sim" class="w-full h-full flex items-center justify-center">
+                  <div id="box-sandbox" class="box-anim w-full max-w-sm h-52 bg-white border-2 border-dashed border-gray-400 rounded-2xl p-4 flex gap-3" style="justify-content: space-between; align-items: center;">
+                    <div class="box-anim bg-idatDark text-idatYellow font-black text-xs p-3 rounded-xl shadow w-16 h-16 flex items-center justify-center text-center">
+                      Caja 1
+                    </div>
+                    <div class="box-anim bg-idatYellow text-idatDark font-black text-xs p-3 rounded-xl shadow w-16 h-16 flex items-center justify-center text-center">
+                      Caja 2
+                    </div>
+                    <div class="box-anim bg-amber-600 text-white font-black text-xs p-3 rounded-xl shadow w-16 h-16 flex items-center justify-center text-center">
+                      Caja 3
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CÓDIGO -->
+                <div id="code-easy-sim" class="hidden w-full h-full font-mono text-xs text-yellow-400 bg-idatDark p-4 rounded-xl overflow-auto custom-scrollbar">
+                  <pre><span class="text-gray-400">/* El contenedor padre */</span>
+<span class="text-blue-400">.contenedor</span> {
+  <span class="text-green-400 font-bold">display: flex;</span>
+  <span class="text-green-400">justify-content: space-between;</span> <span class="text-gray-400">/* Reparte a lo ancho */</span>
+  <span class="text-green-400">align-items: center;</span>            <span class="text-gray-400">/* Centra a lo alto */</span>
+  <span class="text-green-400">gap: 12px;</span>                      <span class="text-gray-400">/* Espacio entre cajas */</span>
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 7: flex-wrap (Cuando no caben en la pantalla) -->
+      <!-- ============================================== -->
+      <div id="slide-7" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">PASO 4</span>
+                <h2 class="text-2xl font-black text-idatDark uppercase tracking-tight">flex-wrap: Saltar de línea automáticamente</h2>
+              </div>
+              <span class="text-xs text-idatMuted font-bold uppercase">Multilínea</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch mt-2">
+              <div class="md:col-span-6 flex flex-col justify-between pr-2 text-xs md:text-sm">
+                <p class="text-gray-600 leading-relaxed mb-3">
+                  ¿Qué pasa si tienes 10 productos y la pantalla es pequeña (como un celular)?
+                </p>
+
+                <div class="space-y-3 text-xs">
+                  <div class="p-3 bg-red-50 border-l-4 border-red-500 rounded-xl text-red-950">
+                    <strong class="font-bold block mb-0.5">Por defecto (nowrap):</strong>
+                    Flexbox intenta apretar todas las cajas a la fuerza en una sola fila aplastándolas o saliéndose de la pantalla.
+                  </div>
+
+                  <div class="p-3 bg-emerald-50 border-l-4 border-emerald-500 rounded-xl text-emerald-950">
+                    <strong class="font-bold block mb-0.5">Con flex-wrap: wrap; (La Solución):</strong>
+                    Las cajas que ya no quepan en la fila <strong>bajan solitas a la siguiente línea</strong> de forma limpia y ordenada.
+                  </div>
+                </div>
+
+                <div class="p-3 bg-gray-100 rounded-xl text-xs text-gray-700 mt-2">
+                  👉 Es la propiedad que te permite hacer galerías de fotos y catálogos de productos que se adaptan a celulares.
+                </div>
+              </div>
+
+              <!-- Código claro -->
+              <div class="md:col-span-6 bg-idatDark text-gray-100 rounded-2xl p-5 font-mono text-xs overflow-auto custom-scrollbar shadow-inner relative flex flex-col justify-center min-h-[250px]">
+                <div class="absolute right-3 top-3 text-[10px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded font-sans uppercase">Catálogo Adaptable</div>
+                
+                <div class="space-y-2 text-xs mb-3">
+                  <div class="text-gray-400">/* Catálogo de tarjetas */</div>
+                  <div><span class="text-yellow-400 font-bold">.catalogo-productos</span> {</div>
+                  <div class="pl-6 text-green-400 font-bold">display: flex;</div>
+                  <div class="pl-6 text-yellow-400 font-bold">flex-wrap: wrap; <span class="text-gray-400">/* Salto de línea automático */</span></div>
+                  <div class="pl-6 text-green-400">gap: 16px;        <span class="text-gray-400">/* Separación limpia */</span></div>
+                  <div>}</div>
+                </div>
+
+                <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700 text-[11px] font-sans text-gray-300">
+                  <strong class="text-idatYellow block mb-0.5">💡 Memorízalo así:</strong>
+                  <code>wrap</code> significa "envolver" o "dar la vuelta". Si no cabe, baja al siguiente renglón.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-xs text-idatMuted border-t border-gray-100 pt-2 flex justify-between flex-shrink-0">
+            <span>Paso 4: Evitar que las cosas se aplasten</span>
+            <span>flex-wrap: wrap</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 8: flex: 1 (Hacer que una caja crezca) -->
+      <!-- ============================================== -->
+      <div id="slide-8" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">TRUCO EXTRA</span>
+                <h2 class="text-2xl font-black text-idatDark uppercase tracking-tight">flex: 1 (Llenar el espacio vacío)</h2>
+              </div>
+              <span class="text-xs text-idatMuted font-bold uppercase">Elasticidad Simple</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch mt-2">
+              <div class="md:col-span-6 flex flex-col justify-between pr-2 text-xs md:text-sm">
+                <p class="text-gray-600 leading-relaxed mb-3">
+                  A veces pones dos cajas al lado, pero te queda un espacio en blanco feo a la derecha. ¿Cómo haces que una caja se estire para llenar ese hueco?
+                </p>
+
+                <div class="space-y-3 text-xs">
+                  <div class="p-3 bg-amber-50 border-l-4 border-idatYellow rounded-xl">
+                    <strong class="text-idatDark font-bold block mb-1">El comodín mágico: flex: 1</strong>
+                    <p class="text-gray-600 text-[11px] leading-relaxed">
+                      Si a un hijo le pones <code>flex: 1;</code>, le estás diciendo: <em>"Estírate todo lo que puedas para ocupar el espacio libre restante"</em>.
+                    </p>
+                  </div>
+
+                  <div class="p-3 bg-blue-50 border-l-4 border-blue-500 rounded-xl">
+                    <strong class="text-blue-950 font-bold block mb-1">Si se lo pones a todos:</strong>
+                    <p class="text-gray-600 text-[11px] leading-relaxed">
+                      Si tienes 3 cajas y a las tres les pones <code>flex: 1;</code>, ¡las tres se repartirán el ancho de la pantalla exactamente en <strong>partes iguales</strong> (33.3% cada una)!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Código y ejemplo visual -->
+              <div class="md:col-span-6 bg-idatDark text-gray-100 rounded-2xl p-5 font-mono text-xs overflow-auto custom-scrollbar shadow-inner relative flex flex-col justify-center min-h-[250px]">
+                <div class="absolute right-3 top-3 text-[10px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded font-sans uppercase">Uso en la vida real</div>
+                
+                <div class="space-y-2 text-xs mb-3">
+                  <div class="text-gray-400">/* Barra lateral fija + Contenido expandible */</div>
+                  <div><span class="text-yellow-400 font-bold">.menu-lateral</span> {</div>
+                  <div class="pl-6 text-green-400">width: 250px; <span class="text-gray-400">/* Tamaño fijo */</span></div>
+                  <div>}</div>
+
+                  <div><span class="text-yellow-400 font-bold">.contenido-principal</span> {</div>
+                  <div class="pl-6 text-green-400 font-bold">flex: 1; <span class="text-gray-400">/* ¡Se estira para llenar la pantalla! */</span></div>
+                  <div>}</div>
+                </div>
+
+                <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700 text-[11px] font-sans text-gray-300">
+                  <strong class="text-idatYellow block mb-0.5">📌 Ya no necesitas calcular con calculadora:</strong>
+                  Olvídate de hacer <code>width: calc(100% - 250px)</code>. <code>flex: 1</code> lo hace solo por ti.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-xs text-idatMuted border-t border-gray-100 pt-2 flex justify-between flex-shrink-0">
+            <span>Uso de flex: 1 en elementos hijos</span>
+            <span>Reparto de Espacio Inteligente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 9: Taller Práctico (Menú de Navegación) -->
+      <!-- ============================================== -->
+      <div id="slide-9" class="slide w-full bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-12 flex-col justify-between h-full">
+        <div class="flex flex-col h-full justify-between">
+          <div class="flex items-center justify-between mb-3 flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <span class="bg-idatYellow text-idatDark font-bold px-2.5 py-0.5 rounded text-xs">LABORATORIO PRÁCTICO</span>
+              <h2 class="text-xl font-black text-idatDark uppercase tracking-tight">Taller: El Menú Web Perfecto en 3 Pasos</h2>
+            </div>
+            <button onclick="toggleExample('example-easy-nav')" class="text-xs bg-idatDark text-white px-4 py-1.5 rounded-full font-bold hover:bg-idatYellow hover:text-idatDark transition-colors">
+              💻 Ver Código / Vista Previa
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch flex-1 min-h-0 my-2">
+            <!-- Instrucciones paso a paso -->
+            <div class="text-sm flex flex-col justify-between">
+              <div>
+                <p class="text-idatMuted leading-relaxed mb-3 text-xs md:text-sm">
+                  Vamos a aplicar lo aprendido hoy para construir el componente más usado de internet: una <strong>barra de navegación profesional</strong>.
+                </p>
+
+                <div class="space-y-2 text-xs">
+                  <div class="p-2.5 bg-gray-50 rounded-xl border-l-4 border-idatYellow">
+                    <strong>Paso 1:</strong> En el <code>&lt;nav&gt;</code> ponemos <code>display: flex</code> para que el logo, los enlaces y el botón estén en una fila.
+                  </div>
+                  <div class="p-2.5 bg-gray-50 rounded-xl border-l-4 border-amber-500">
+                    <strong>Paso 2:</strong> Ponemos <code>justify-content: space-between</code> para que el logo se vaya al extremo izquierdo y el botón al derecho.
+                  </div>
+                  <div class="p-2.5 bg-gray-50 rounded-xl border-l-4 border-blue-500">
+                    <strong>Paso 3:</strong> Ponemos <code>align-items: center</code> para que todos queden perfectamente alineados a la misma altura.
+                  </div>
+                  <div class="p-2.5 bg-gray-50 rounded-xl border-l-4 border-emerald-500">
+                    <strong>Paso 4:</strong> En los enlaces usamos <code>display: flex; gap: 16px;</code> para separarlos sin márgenes.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel de vista previa y código -->
+            <div class="border border-gray-200 rounded-2xl overflow-hidden shadow-sm flex flex-col bg-white h-full min-h-[280px]">
+              <div class="bg-gray-100 px-4 py-2 flex justify-between items-center border-b border-gray-200">
+                <span id="label-easy-nav" class="text-xs font-bold text-idatDark">Resultado en Vivo</span>
+                <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
+              </div>
+              
+              <div class="p-6 flex-1 overflow-auto custom-scrollbar flex items-center justify-center bg-gray-50/50">
+                <!-- VISTA PREVIA -->
+                <div id="preview-easy-nav" class="w-full space-y-4">
+                  <!-- Barra de navegación -->
+                  <nav class="bg-idatDark text-white px-5 py-3 rounded-xl flex items-center justify-between shadow-md">
+                    <!-- Logo -->
+                    <div class="flex items-center gap-2">
+                      <span class="bg-idatYellow text-idatDark font-black px-2 py-0.5 rounded text-xs">IDAT</span>
+                      <span class="text-xs font-bold hidden sm:inline">Web 2026</span>
+                    </div>
+
+                    <!-- Enlaces -->
+                    <div class="flex items-center gap-4 text-xs font-medium text-gray-300">
+                      <span class="hover:text-idatYellow cursor-pointer">Inicio</span>
+                      <span class="hover:text-idatYellow cursor-pointer">Cursos</span>
+                      <span class="hover:text-idatYellow cursor-pointer hidden sm:inline">Contacto</span>
+                    </div>
+
+                    <!-- Botón -->
+                    <button class="bg-idatYellow text-idatDark font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-yellow-400 transition-colors shadow">
+                      Matrícula
+                    </button>
+                  </nav>
+
+                  <!-- Tarjetas elásticas simples -->
+                  <div class="flex gap-3">
+                    <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex-1 text-center">
+                      <span class="text-lg">⚡</span>
+                      <p class="font-bold text-xs text-idatDark mt-1">display: flex</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex-1 text-center">
+                      <span class="text-lg">🎯</span>
+                      <p class="font-bold text-xs text-idatDark mt-1">space-between</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex-1 text-center">
+                      <span class="text-lg">📏</span>
+                      <p class="font-bold text-xs text-idatDark mt-1">gap: 16px</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CÓDIGO HTML/CSS -->
+                <div id="code-easy-nav" class="hidden w-full h-full font-mono text-xs text-yellow-400 bg-idatDark p-4 rounded-xl overflow-auto custom-scrollbar">
+                  <pre><span class="text-gray-400">/* Todo el CSS que necesitas para un menú profesional: */</span>
+<span class="text-blue-400">.menu-navegacion</span> {
+  <span class="text-green-400 font-bold">display: flex;</span>
+  <span class="text-green-400 font-bold">justify-content: space-between;</span> <span class="text-gray-400">/* Logo a la izq, botón a la der */</span>
+  <span class="text-green-400 font-bold">align-items: center;</span>            <span class="text-gray-400">/* Todos a la misma altura */</span>
+  <span class="text-green-400">padding: 12px 20px;</span>
+}
+
+<span class="text-blue-400">.lista-enlaces</span> {
+  <span class="text-green-400 font-bold">display: flex;</span>
+  <span class="text-green-400 font-bold">gap: 16px;</span>                     <span class="text-gray-400">/* Separación limpia sin márgenes */</span>
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DIAPOSITIVA 10: Cierre de Sesión / Agradecimiento -->
+      <!-- ============================================== -->
+      <div id="slide-10" class="slide w-full bg-idatDark rounded-3xl shadow-xl border border-gray-900 p-8 md:p-12 flex-col justify-between h-full text-white">
+        <div class="flex flex-col items-center justify-center text-center my-auto">
+          <div class="bg-idatYellow text-idatDark font-black px-6 py-2 rounded-full text-xs md:text-sm tracking-widest uppercase mb-4 animate-bounce">
+            ¡SESIÓN 18 CUMPLIDA!
+          </div>
+          <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+            Muchas Gracias por <br class="hidden md:block">su Atención
+          </h2>
+          <p class="text-gray-400 mt-2 max-w-xl text-xs md:text-sm leading-relaxed">
+            ¡Felicidades! Ya dominas la forma más moderna de ordenar elementos en la web. Con solo 4 propiedades puedes armar menús, centrar botones y organizar tarjetas limpiamente.
+          </p>
+          
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl">
+            <div class="bg-gray-800/80 p-4 rounded-2xl border border-gray-700 text-left">
+              <span class="text-idatYellow text-xs font-bold uppercase block tracking-wider mb-1.5">TU RESUMEN DE BOLSILLO</span>
+              <ul class="text-xs text-gray-300 space-y-1">
+                <li>• <code>display: flex</code> &rarr; Pone los hijos en una fila.</li>
+                <li>• <code>justify-content</code> &rarr; Mueve a lo ancho (izquierda, centro, extremos).</li>
+                <li>• <code>align-items: center</code> &rarr; Centra verticalmente a lo alto.</li>
+                <li>• <code>gap</code> &rarr; Separa las cajas sin márgenes raros.</li>
+                <li>• <code>flex-wrap: wrap</code> &rarr; Baja a la siguiente línea si no cabe.</li>
+              </ul>
+            </div>
+            
+            <div class="bg-gray-800/80 p-4 rounded-2xl border border-gray-700 text-left">
+              <span class="text-idatYellow text-xs font-bold uppercase block tracking-wider mb-1.5">PRÓXIMA CLASE: SESIÓN 19</span>
+              <p class="text-xs text-gray-300 mb-2 font-medium">Haremos que nuestras páginas se vean perfectas en celulares:</p>
+              <ul class="text-xs text-gray-300 space-y-1">
+                <li>• <strong>Media Queries:</strong> Cambiar el diseño según el tamaño de la pantalla.</li>
+                <li>• <strong>Diseño para Celulares:</strong> Pasar nuestro menú horizontal a vertical en pantallas chicas.</li>
+                <li>• <strong>Práctica en vivo:</strong> Adaptar nuestro proyecto para que funcione en smartphones.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 pt-3 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 w-full gap-2 flex-shrink-0">
+          <span>Ing. Jhon Chavez • <span class="text-idatYellow">Flexbox Básico y Fácil</span></span>
+          <span>© 2026 IDAT. Todos los derechos reservados.</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer de Navegación -->
+  <footer class="bg-white border-t border-gray-200 px-6 md:px-12 py-3 flex flex-col md:flex-row items-center justify-between gap-4 h-auto md:h-[72px] flex-shrink-0 z-50">
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-idatMuted font-bold tracking-wider uppercase">Progreso actual:</span>
+      <div class="flex items-center gap-1.5 bg-idatLight border border-gray-200 rounded-full px-3 py-1 text-xs font-black text-idatDark">
+        <span id="current-slide-num">1</span> / <span id="total-slides-num">10</span>
+      </div>
+    </div>
+
+    <!-- Botones de Navegación -->
+    <div class="flex items-center gap-2">
+      <button id="btn-prev" onclick="changeSlide(-1)" class="bg-idatDark hover:bg-idatYellow hover:text-idatDark text-white p-2.5 rounded-full transition-all duration-200 shadow disabled:opacity-30 disabled:pointer-events-none" title="Diapositiva Anterior">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      
+      <div class="flex items-center gap-1.5 px-2" id="dots-container"></div>
+
+      <button id="btn-next" onclick="changeSlide(1)" class="bg-idatDark hover:bg-idatYellow hover:text-idatDark text-white p-2.5 rounded-full transition-all duration-200 shadow disabled:opacity-30 disabled:pointer-events-none" title="Siguiente Diapositiva">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-2 text-xs text-idatMuted">
+      <span class="font-bold">Atajos del teclado:</span>
+      <kbd class="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-idatDark font-mono font-bold shadow-sm">←</kbd>
+      <kbd class="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-idatDark font-mono font-bold shadow-sm">→</kbd>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    function initDots() {
+      const container = document.getElementById('dots-container');
+      container.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === 1 ? 'bg-idatYellow ring-2 ring-idatDark w-4' : 'bg-gray-300 hover:bg-gray-400'}`;
+        dot.title = `Ir a Diapositiva ${i}`;
+        dot.onclick = () => jumpToSlide(i);
+        container.appendChild(dot);
+      }
+    }
+
+    function jumpToSlide(num) {
+      if (num < 1 || num > totalSlides) return;
+      
+      document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+      document.getElementById(`slide-${currentSlide}`).classList.add('hidden');
+      
+      currentSlide = num;
+      document.getElementById(`slide-${currentSlide}`).classList.remove('hidden');
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+      
+      updateUI();
+    }
+
+    function changeSlide(direction) {
+      const target = currentSlide + direction;
+      jumpToSlide(target);
+    }
+
+    function updateUI() {
+      document.getElementById('current-slide-num').innerText = currentSlide;
+      document.getElementById('total-slides-num').innerText = totalSlides;
+
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+      const dots = document.getElementById('dots-container').children;
+      for (let i = 0; i < dots.length; i++) {
+        const index = i + 1;
+        if (index === currentSlide) {
+          dots[i].className = 'w-4 h-2.5 rounded-full transition-all duration-300 bg-idatYellow ring-2 ring-idatDark';
+        } else {
+          dots[i].className = 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-gray-300 hover:bg-gray-400';
+        }
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+      }
+    });
+
+    // Toggle Código vs Vista Previa
+    function toggleExample(id) {
+      let previewEl, codeEl, labelEl;
+      
+      if (id === 'example-easy-sim') {
+        previewEl = document.getElementById('preview-easy-sim');
+        codeEl = document.getElementById('code-easy-sim');
+        labelEl = document.getElementById('label-easy-sim');
+      } else if (id === 'example-easy-nav') {
+        previewEl = document.getElementById('preview-easy-nav');
+        codeEl = document.getElementById('code-easy-nav');
+        labelEl = document.getElementById('label-easy-nav');
+      }
+
+      if (previewEl.classList.contains('hidden')) {
+        previewEl.classList.remove('hidden');
+        codeEl.classList.add('hidden');
+        labelEl.innerText = "Vista Previa en Vivo";
+      } else {
+        previewEl.classList.add('hidden');
+        codeEl.classList.remove('hidden');
+        labelEl.innerText = "Código HTML / CSS";
+      }
+    }
+
+    // Simulador sencillo
+    let simJustify = 'space-between';
+    let simAlign = 'center';
+
+    function updateSim() {
+      const box = document.getElementById('box-sandbox');
+      const label = document.getElementById('sim-status-code');
+      box.style.justifyContent = simJustify;
+      box.style.alignItems = simAlign;
+      label.innerText = `display: flex; justify-content: ${simJustify}; align-items: ${simAlign}; gap: 12px;`;
+    }
+
+    function setSimJustify(val) {
+      simJustify = val;
+      updateSim();
+    }
+
+    function setSimAlign(val) {
+      simAlign = val;
+      updateSim();
+    }
+
+    window.onload = function() {
+      initDots();
+      updateUI();
+    };
+  </script>
+</body>
+</html>
